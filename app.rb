@@ -11,6 +11,7 @@ require 'json'
 
 set :public_folder, File.dirname(__FILE__) + '/public'
 set :static, true
+set :protection, :except => [:json_csrf]
 
 get '/' do
   erb :index
@@ -38,8 +39,7 @@ get '/get-related' do
     config.nonet
   end
   related = html_doc.css("#watch-related>li")
-  headers \
-    "Content-Type" => "application/json"
+  content_type :json
   related.map { |el|
     href = el.css('.content-wrapper>a').first["href"]
     title = el.css(".title").first.content.strip
