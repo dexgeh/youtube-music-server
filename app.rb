@@ -8,16 +8,20 @@ require 'sinatra'
 require 'nokogiri'
 require 'open-uri'
 require 'json'
+require 'uri'
+require 'net/http'
 
 set :public_folder, File.dirname(__FILE__) + '/public'
 set :static, true
 set :protection, :except => [:json_csrf]
 
+enable :logging
+
 get '/' do
   erb :index
 end
 
-get '/get-audio-link' do
+get '/get-audio-stream' do
   url = params['url']
   youtubeDl = IO.popen [
     "youtube-dl",
@@ -28,10 +32,20 @@ get '/get-audio-link' do
   ]
   audioLink = youtubeDl.readlines.join
   youtubeDl.close
-  status 500 if $? != 0
-  headers \
-    "Content-Type" => "text/plain"
-  body audioLink
+  if $? != 0
+    status 500
+  else
+    puts "requesting #{audioLink}"
+    uri = URI::parse audioLink
+    stream do |out|
+      Net::HTTP.get_response(uri) do |res|
+        res.read_body { |chunk|
+          out << chunk
+        }
+        out.close
+      end
+    end
+  end
 end
 
 get '/get-related' do

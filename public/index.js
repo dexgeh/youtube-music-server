@@ -27,31 +27,24 @@ var from_related = function(el) {
 }
 
 var go = function(url) {
-  document.querySelector('#audio-player').innerHTML = '';
+  document.querySelector('#audio-player').innerHTML = audioPlayerHTML(
+    'get-audio-stream?url=' + encodeURIComponent(url)
+  );
   document.querySelector('#related').innerHTML = '';
-  httpget('get-audio-link?url=' + encodeURIComponent(url),
-    function(err, res) {
+  httpget("get-related?url=" + encodeURIComponent(url),
+    function(err,res) {
     if (err) {
-      alert("get-audio-link: GOT ERROR: " + err.message);
+      alert("get-related: GOT ERROR: " + err.message);
     } else {
-      var audioPlayer = document.querySelector('#audio-player');
-      audioPlayer.innerHTML = audioPlayerHTML(res);
-      httpget("get-related?url=" + encodeURIComponent(url),
-        function(err,res) {
-        if (err) {
-          alert("get-related: GOT ERROR: " + err.message);
-        } else {
-          var related = document.querySelector('#related');
-          var html = "<ul><li>" + JSON.parse(res).map(function(el) {
-            return "<a href='https://www.youtube.com" + el.href +
-              "' onclick='return from_related(this)' class=related>" +
-              el.title + "</a>";
-          }).join("</li><li>") + "</li></ul>";
-          related.innerHTML = html;
-        }
-      })
+      var related = document.querySelector('#related');
+      var html = "<ul><li>" + JSON.parse(res).map(function(el) {
+        return "<a href='https://www.youtube.com" + el.href +
+          "' onclick='return from_related(this)' class=related>" +
+          el.title + "</a>";
+      }).join("</li><li>") + "</li></ul>";
+      related.innerHTML = html;
     }
-  });
+  })
 }
 
 window.onload = function() {
