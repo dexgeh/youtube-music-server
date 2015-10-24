@@ -10,3 +10,17 @@ header {
 #audio-player, audio {
   width: 100%;
 }
+
+li {
+  list-style-type: none;
+  display: block;
+  border-right: 1px solid lightgray;
+  border-bottom: 1px solid gray;
+  font-family: Helvetica;
+  margin: 5px;
+}
+
+li>a {
+  color: gray;
+  text-decoration: none;
+}
