@@ -1,0 +1,12 @@
+header {
+  width: 100%;
+}
+
+#url {
+  width: 100%;
+  border: 1px solid red;
+}
+
+#audio-player, audio {
+  width: 100%;
+}
