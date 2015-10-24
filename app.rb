@@ -21,8 +21,15 @@ get '/' do
   erb :index
 end
 
+def validate(url)
+  url =~ /^https?:\/\/((.{2,3})\.youtube\.com|youtu\.be)\//
+end
+
 get '/get-audio-stream' do
   url = params['url']
+  if not validate(url)
+    halt 500
+  end
   youtubeDl = IO.popen [
     "youtube-dl",
     "-g",
@@ -49,7 +56,11 @@ get '/get-audio-stream' do
 end
 
 get '/get-related' do
-  html_doc = Nokogiri::HTML(open(params['url'])) do |config|
+  url = params['url']
+  if not validate(url)
+    halt 500
+  end
+  html_doc = Nokogiri::HTML(open(url)) do |config|
     config.nonet
   end
   related = html_doc.css("#watch-related>li")
