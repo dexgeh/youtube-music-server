@@ -1,4 +1,4 @@
-youtube audio server
+youtube music server
 ====================
 
 Simple webapp in ruby, based on sinatra, nokogiri and youtube-dl.
