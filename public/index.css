@@ -24,3 +24,8 @@ li>a {
   color: gray;
   text-decoration: none;
 }
+
+footer {
+  font-size: 10px;
+  text-align: center;
+}
