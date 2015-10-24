@@ -39,13 +39,22 @@ get '/get-related' do
     config.nonet
   end
   related = html_doc.css("#watch-related>li")
+  if not related
+    status 500
+    return
+  end
   content_type :json
   related.map { |el|
-    href = el.css('.content-wrapper>a').first["href"]
-    title = el.css(".title").first.content.strip
-    {
-      :href => href,
-      :title => title
-    }
-  }.to_json
+    link = el.css(".content-wrapper>a")
+    value = nil
+    if link.first
+      href = link.first["href"]
+      title = el.css(".title")
+      value = {
+        :href => href,
+        :title => title
+      }
+    end
+    value
+  }.select { |v| v }.to_json
 end
